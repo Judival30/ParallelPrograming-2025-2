@@ -8,7 +8,7 @@ double a = 0.0, b = M_PI; // intervalo
 double resultado = 0.0;   // integral acumulada
 pthread_mutex_t mut;
 
-// función global de integración
+
 double f(double x) { return sin(x); }
 
 void *worker(void *rank)
@@ -52,3 +52,4 @@ int main()
     pthread_mutex_destroy(&mut);
     return 0;
 }
+
