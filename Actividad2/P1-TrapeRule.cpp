@@ -5,7 +5,7 @@ using namespace std;
 const int THREADS = 2;
 long n = 1024;            // número de trapecios
 double a = 0.0, b = M_PI; // intervalo
-double resultado = 0.0;   // integral acumulada
+double resultado = 0.0;  
 pthread_mutex_t mut;
 
 
@@ -52,4 +52,5 @@ int main()
     pthread_mutex_destroy(&mut);
     return 0;
 }
+
 
