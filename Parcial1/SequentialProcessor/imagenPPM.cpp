@@ -84,7 +84,6 @@ void ImagenPPM::blur()
             int rSum = 0, gSum = 0, bSum = 0;
             int count = 0;
 
-            // Recorrer la vecindad 3x3
             for (int di = -1; di <= 1; di++)
             {
                 for (int dj = -1; dj <= 1; dj++)
@@ -107,13 +106,58 @@ void ImagenPPM::blur()
         }
     }
 
-    // Copiar el resultado de vuelta a la matriz original
     for (int i = 0; i < M; i++)
         for (int j = 0; j < N; j++)
             mat[i][j] = temp[i][j];
 
-    // Liberar memoria temporal
     for (int i = 0; i < M; i++)
         delete[] temp[i];
     delete[] temp;
 }
+
+void ImagenPPM::laplace()
+{
+    // Aplicar un desenfoque simple (blur) usando un filtro 3x3
+    Pixel **temp = new Pixel *[M];
+    for (int i = 0; i < M; i++)
+        temp[i] = new Pixel[N];
+    int kernel[3][3] = {{0, 1, 0},
+                        {1, -4, 1},
+                        {0, 1, 0}};
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            int rSum = 0, gSum = 0, bSum = 0;
+
+            for (int di = -1; di <= 1; di++)
+            {
+                for (int dj = -1; dj <= 1; dj++)
+                {
+                    int ni = i + di;
+                    int nj = j + dj;
+                    if (ni >= 0 && ni < M && nj >= 0 && nj < N)
+                    {
+                        rSum += mat[ni][nj].r * kernel[di + 1][dj + 1];
+                        gSum += mat[ni][nj].g * kernel[di + 1][dj + 1];
+                        bSum += mat[ni][nj].b * kernel[di + 1][dj + 1];
+                    }
+                }
+            }
+
+            temp[i][j].r = rSum;
+            temp[i][j].g = gSum;
+            temp[i][j].b = bSum;
+        }
+    }
+
+    for (int i = 0; i < M; i++)
+        for (int j = 0; j < N; j++)
+            mat[i][j] = temp[i][j];
+
+    for (int i = 0; i < M; i++)
+        delete[] temp[i];
+    delete[] temp;
+}
+
+void ImagenPPM::sharpening() {}

@@ -15,6 +15,8 @@ public:
     virtual void procesar() = 0;
     virtual void escribir() = 0;
     virtual void blur() = 0;
+    virtual void laplace() = 0;
+    virtual void sharpening() = 0;
     virtual ~Imagen() {}
 };
 

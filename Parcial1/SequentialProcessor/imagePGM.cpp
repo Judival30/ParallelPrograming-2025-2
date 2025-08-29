@@ -99,3 +99,151 @@ void ImagenPGM::blur()
         delete[] temp[i];
     delete[] temp;
 }
+
+void ImagenPGM::laplace()
+{
+    int **temp = new int *[M];
+    for (int i = 0; i < M; i++)
+        temp[i] = new int[N];
+    int k = 5;
+
+    int kernel[3][3] = {{0, 1, 0},
+                        {1, -4, 1},
+                        {0, 1, 0}};
+    k = 1;
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+
+            int sum = 0;
+            for (int di = -k; di <= k; di++)
+            {
+                for (int dj = -k; dj <= k; dj++)
+                {
+                    int ni = i + di, nj = j + dj;
+                    if (ni >= 0 && ni < M && nj >= 0 && nj < N)
+                    {
+                        sum += mat[ni][nj] * kernel[di + 1][dj + 1];
+                    }
+                }
+            }
+            temp[i][j] = sum;
+        }
+    }
+    for (int i = 0; i < M; i++)
+        for (int j = 0; j < N; j++)
+            mat[i][j] = temp[i][j];
+
+    for (int i = 0; i < M; i++)
+        delete[] temp[i];
+    delete[] temp;
+}
+/*
+void ImagenPGM::sharpening()
+{
+    int **temp = new int *[M];
+    for (int i = 0; i < M; i++)
+        temp[i] = new int[N];
+    int k = 5;
+
+    int kernel[3][3] = {{0, 1, 0},
+                        {1, -4, 1},
+                        {0, 1, 0}};
+    k = 1;
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+
+            int sum = 0;
+            int acum = 0;
+            for (int di = -k; di <= k; di++)
+            {
+                for (int dj = -k; dj <= k; dj++)
+                {
+                    int ni = i + di, nj = j + dj;
+                    if (ni >= 0 && ni < M && nj >= 0 && nj < N)
+                    {
+                        sum += mat[ni][nj] * kernel[di + 1][dj + 1];
+                    }
+                }
+            }
+            temp[i][j] = sum;
+        }
+    }
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            if (mat[i][j] + temp[i][j] > 255)
+                mat[i][j] = 255;
+            else if (mat[i][j] + temp[i][j] < 0)
+                mat[i][j] = 0;
+            else
+                mat[i][j] += temp[i][j];
+        }
+    }
+
+    for (int i = 0; i < M; i++)
+        delete[] temp[i];
+    delete[] temp;
+}
+ */
+
+void ImagenPGM::sharpening()
+{
+    int **blur = new int *[M];
+    for (int i = 0; i < M; i++)
+        blur[i] = new int[N];
+
+    // Kernel de suavizado 3x3 (promedio simple)
+    int kernel[3][3] = {{1, 1, 1},
+                        {1, 1, 1},
+                        {1, 1, 1}};
+    int k = 1;
+    int divisor = 9; // suma del kernel
+
+    // Paso 1: calcular imagen suavizada
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            int sum = 0;
+            for (int di = -k; di <= k; di++)
+            {
+                for (int dj = -k; dj <= k; dj++)
+                {
+                    int ni = i + di, nj = j + dj;
+                    if (ni >= 0 && ni < M && nj >= 0 && nj < N)
+                    {
+                        sum += mat[ni][nj] * kernel[di + k][dj + k];
+                    }
+                }
+            }
+            blur[i][j] = sum / divisor;
+        }
+    }
+
+    // Paso 2: unsharp masking → original + factor*(original - blur)
+    float factor = 2.0; // controla la intensidad del sharpen
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            int detail = mat[i][j] - blur[i][j];
+            int val = mat[i][j] + factor * detail;
+
+            if (val > 255)
+                val = 255;
+            if (val < 0)
+                val = 0;
+            mat[i][j] = val;
+        }
+    }
+
+    // Liberar memoria
+    for (int i = 0; i < M; i++)
+        delete[] blur[i];
+    delete[] blur;
+}

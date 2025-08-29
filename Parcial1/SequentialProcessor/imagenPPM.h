@@ -19,6 +19,8 @@ public:
     void procesar() override;
     void escribir() override;
     void blur() override;
+    void laplace() override;
+    void sharpening() override;
 };
 
 #endif
