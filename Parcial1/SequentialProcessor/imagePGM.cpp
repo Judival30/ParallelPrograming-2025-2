@@ -197,7 +197,6 @@ void ImagenPGM::sharpening()
     for (int i = 0; i < M; i++)
         blur[i] = new int[N];
 
-    // Kernel de suavizado 3x3 (promedio simple)
     int kernel[3][3] = {{1, 1, 1},
                         {1, 1, 1},
                         {1, 1, 1}};
@@ -225,7 +224,6 @@ void ImagenPGM::sharpening()
         }
     }
 
-    // Paso 2: unsharp masking → original + factor*(original - blur)
     float factor = 2.0; // controla la intensidad del sharpen
     for (int i = 0; i < M; i++)
     {

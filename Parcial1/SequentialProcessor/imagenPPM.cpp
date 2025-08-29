@@ -114,16 +114,16 @@ void ImagenPPM::blur()
         delete[] temp[i];
     delete[] temp;
 }
-
 void ImagenPPM::laplace()
 {
-    // Aplicar un desenfoque simple (blur) usando un filtro 3x3
     Pixel **temp = new Pixel *[M];
     for (int i = 0; i < M; i++)
         temp[i] = new Pixel[N];
+
     int kernel[3][3] = {{0, 1, 0},
                         {1, -4, 1},
                         {0, 1, 0}};
+
     for (int i = 0; i < M; i++)
     {
         for (int j = 0; j < N; j++)
@@ -145,9 +145,9 @@ void ImagenPPM::laplace()
                 }
             }
 
-            temp[i][j].r = rSum;
-            temp[i][j].g = gSum;
-            temp[i][j].b = bSum;
+            temp[i][j].r = std::min(255, std::max(0, rSum));
+            temp[i][j].g = std::min(255, std::max(0, gSum));
+            temp[i][j].b = std::min(255, std::max(0, bSum));
         }
     }
 
@@ -160,4 +160,61 @@ void ImagenPPM::laplace()
     delete[] temp;
 }
 
-void ImagenPPM::sharpening() {}
+void ImagenPPM::sharpening()
+{
+    Pixel **temp = new Pixel *[M];
+    for (int i = 0; i < M; i++)
+        temp[i] = new Pixel[N];
+
+    int kernel[3][3] = {{1, 1, 1},
+                        {1, 1, 1},
+                        {1, 1, 1}};
+    int divisor = 9; // suma del kernel
+
+    // Paso 1: aplicar blur (promedio) en temp
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            int rSum = 0, gSum = 0, bSum = 0;
+
+            for (int di = -1; di <= 1; di++)
+            {
+                for (int dj = -1; dj <= 1; dj++)
+                {
+                    int ni = i + di;
+                    int nj = j + dj;
+                    if (ni >= 0 && ni < M && nj >= 0 && nj < N)
+                    {
+                        rSum += mat[ni][nj].r * kernel[di + 1][dj + 1];
+                        gSum += mat[ni][nj].g * kernel[di + 1][dj + 1];
+                        bSum += mat[ni][nj].b * kernel[di + 1][dj + 1];
+                    }
+                }
+            }
+
+            temp[i][j].r = rSum / divisor;
+            temp[i][j].g = gSum / divisor;
+            temp[i][j].b = bSum / divisor;
+        }
+    }
+
+    double alpha = 1.5; // factor de realce
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            int r = mat[i][j].r + alpha * (mat[i][j].r - temp[i][j].r);
+            int g = mat[i][j].g + alpha * (mat[i][j].g - temp[i][j].g);
+            int b = mat[i][j].b + alpha * (mat[i][j].b - temp[i][j].b);
+
+            mat[i][j].r = std::min(255, std::max(0, r));
+            mat[i][j].g = std::min(255, std::max(0, g));
+            mat[i][j].b = std::min(255, std::max(0, b));
+        }
+    }
+
+    for (int i = 0; i < M; i++)
+        delete[] temp[i];
+    delete[] temp;
+}
