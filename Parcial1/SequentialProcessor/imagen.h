@@ -12,7 +12,6 @@ protected:
 
 public:
     virtual void leer() = 0;
-    virtual void procesar() = 0;
     virtual void escribir() = 0;
     virtual void blur() = 0;
     virtual void laplace() = 0;

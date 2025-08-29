@@ -16,7 +16,6 @@ public:
     ImagenPPM() : mat(nullptr) {}
     ~ImagenPPM();
     void leer() override;
-    void procesar() override;
     void escribir() override;
     void blur() override;
     void laplace() override;

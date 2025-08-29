@@ -40,19 +40,6 @@ void ImagenPPM::leer()
             cin >> mat[i][j].r >> mat[i][j].g >> mat[i][j].b;
 }
 
-void ImagenPPM::procesar()
-{
-    // Convertir a escala de grises
-    for (int i = 0; i < M; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-            int gris = (mat[i][j].r + mat[i][j].g + mat[i][j].b) / 3;
-            mat[i][j].r = mat[i][j].g = mat[i][j].b = gris;
-        }
-    }
-}
-
 void ImagenPPM::escribir()
 {
     cout << "P3\n"

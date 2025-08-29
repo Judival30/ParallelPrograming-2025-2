@@ -40,14 +40,6 @@ void ImagenPGM::leer()
             cin >> mat[i][j];
 }
 
-void ImagenPGM::procesar()
-{
-    // Negativo
-    for (int i = 0; i < M; i++)
-        for (int j = 0; j < N; j++)
-            mat[i][j] = mxVal - mat[i][j];
-}
-
 void ImagenPGM::escribir()
 {
     cout << "P2\n"
@@ -139,57 +131,6 @@ void ImagenPGM::laplace()
         delete[] temp[i];
     delete[] temp;
 }
-/*
-void ImagenPGM::sharpening()
-{
-    int **temp = new int *[M];
-    for (int i = 0; i < M; i++)
-        temp[i] = new int[N];
-    int k = 5;
-
-    int kernel[3][3] = {{0, 1, 0},
-                        {1, -4, 1},
-                        {0, 1, 0}};
-    k = 1;
-    for (int i = 0; i < M; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-
-            int sum = 0;
-            int acum = 0;
-            for (int di = -k; di <= k; di++)
-            {
-                for (int dj = -k; dj <= k; dj++)
-                {
-                    int ni = i + di, nj = j + dj;
-                    if (ni >= 0 && ni < M && nj >= 0 && nj < N)
-                    {
-                        sum += mat[ni][nj] * kernel[di + 1][dj + 1];
-                    }
-                }
-            }
-            temp[i][j] = sum;
-        }
-    }
-    for (int i = 0; i < M; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-            if (mat[i][j] + temp[i][j] > 255)
-                mat[i][j] = 255;
-            else if (mat[i][j] + temp[i][j] < 0)
-                mat[i][j] = 0;
-            else
-                mat[i][j] += temp[i][j];
-        }
-    }
-
-    for (int i = 0; i < M; i++)
-        delete[] temp[i];
-    delete[] temp;
-}
- */
 
 void ImagenPGM::sharpening()
 {

@@ -2,29 +2,23 @@
 #include "ImagenPPM.h"
 #include <cstring>
 #include <iostream>
+#include <chrono>
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    if (argc < 5)
-    {
-        cerr << "Uso: " << argv[0] << " <entrada> <salida> --f <filtro>\n";
-        return 1;
-    }
+    // Iniciar cronómetro
+    auto start = chrono::high_resolution_clock::now();
 
-    // Redirigir entrada y salida
     freopen(argv[1], "r", stdin);
     freopen(argv[2], "w", stdout);
 
-    // Leer tipo de archivo (P2 o P3)
     char tipo[3];
     cin >> tipo;
 
-    // Volver a meter el tipo al flujo
     for (int i = (int)strlen(tipo) - 1; i >= 0; i--)
         cin.putback(tipo[i]);
 
-    // Crear objeto imagen
     Imagen *img = nullptr;
     if (tipo[0] == 'P' && tipo[1] == '2')
         img = new ImagenPGM();
@@ -60,5 +54,12 @@ int main(int argc, char *argv[])
     img->escribir();
 
     delete img;
+
+    // Detener cronómetro
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = end - start;
+
+    cerr << "Tiempo de CPU: " << elapsed.count() << " segundos\n";
+
     return 0;
 }
