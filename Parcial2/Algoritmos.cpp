@@ -108,7 +108,6 @@ int BFS_parallel(const Tablero &ini, int n_hilos = 4) {
 
         vector<pair<string, int>> nuevos;
 
-        // 🔹 Paralelizamos expansión de nodos del mismo nivel
         #pragma omp parallel for num_threads(n_hilos) schedule(dynamic)
         for (int i = 0; i < (int)nivel_actual.size(); ++i) {
             string estado = nivel_actual[i].first;
@@ -140,8 +139,6 @@ int BFS_parallel(const Tablero &ini, int n_hilos = 4) {
                 }
             }
         }
-
-        // Agregar nuevos estados al final de la cola
         for (int i = 0; i < (int)nuevos.size(); ++i)
             q.push(nuevos[i]);
     }
@@ -191,11 +188,6 @@ int AStar_h1(const Tablero &ini) {
 }
 
 int AStar_h2(const Tablero &ini) {
-    if (!ini.esSoluble()) {
-        cout << "❌ Este tablero no tiene solución.\n";
-        return -1;
-    }
-
     int N = ini.getSize();
     string goal;
     for (char c = 'A'; goal.size() < N * N - 1; c++) goal.push_back(c);
@@ -256,10 +248,7 @@ void compararParalelo(const Tablero &ini) {
 }
 
 int AStar_h2_dataDecomposition(const Tablero &ini, int n_hilos = 4) {
-    if (!ini.esSoluble()) {
-        cout << "Este tablero no tiene solución.\n";
-        return -1;
-    }
+   
 
     int N = ini.getSize();
     string goal;

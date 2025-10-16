@@ -60,18 +60,4 @@ Tablero Tablero::mover(const string &accion) const {
     return nuevo;
 }
 
-bool Tablero::esSoluble() const {
-    string estado = toString();
-    string s = estado;
-    s.erase(remove(s.begin(), s.end(), '#'), s.end());
-    int inv = 0;
-    for (int i = 0; i < (int)s.size(); ++i)
-        for (int j = i + 1; j < (int)s.size(); ++j)
-            if (s[i] > s[j]) inv++;
 
-    int posVacia = estado.find('#');
-    int filaDesdeAbajo = N - (posVacia / N);
-
-    if (N % 2 == 1) return inv % 2 == 0;
-    return (filaDesdeAbajo % 2 == 0) ? (inv % 2 == 1) : (inv % 2 == 0);
-}
