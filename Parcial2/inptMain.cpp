@@ -2,13 +2,15 @@
 #include <omp.h>
 #include "Tablero.h"
 #include "Algoritmos.h"
+#include <cmath>  
 
 using namespace std;    
 
 int main() {
     string estado;
     while(cin >> estado){
-        Tablero t(estado, 4);
+        int n = sqrt((int)estado.size());
+        Tablero t(estado, n);
         double ini = omp_get_wtime();
         int ans = AStar_h2(t);
         double fin = omp_get_wtime();
